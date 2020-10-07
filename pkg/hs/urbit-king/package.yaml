@@ -111,6 +111,7 @@ dependencies:
   - vector
   - wai
   - wai-conduit
+  - wai-routes
   - wai-websockets
   - warp
   - warp-tls
