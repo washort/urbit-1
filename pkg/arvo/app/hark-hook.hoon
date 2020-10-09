@@ -1,8 +1,7 @@
 ::  hark-hook: notifications [landscape]
 ::
-/-  *resource, store=hark-hook, post, group-store, graph-store, metadata-store
-/+  res=resource, metadata, default-agent, dbug
-=*  resource  resource:post
+/-  store=hark-hook, post, group-store, metadata-store
+/+  resource, metadata, default-agent, dbug, graph-store
 ::
 ~%  %hark-hook-top  ..is  ~
 |%
@@ -173,11 +172,11 @@
         %add-nodes
       =/  app-resource=resource  resource.q.update
       =/  group-resource=(unit resource)
-        (group-from-app-resource:metadata %graph app-resource)
+        (group-from-app-resource:met %graph app-resource)
       ?~  group-resource
         [~ state]
-      =/  meta=(unit metadata:metadata)
-        (peek-metadata:metadata %graph u.group-resource app-resource)
+      =/  meta=(unit metadata:metadata-store)
+        (peek-metadata:met %graph u.group-resource app-resource)
       ?~  meta
         [~ state]
       ?+    module.u.meta  [~ state]
@@ -215,11 +214,11 @@
         %remove-nodes
       =/  app-resource=resource  resource.q.update
       =/  group-resource=(unit resource)
-        (group-from-app-resource:metadata %graph app-resource)
+        (group-from-app-resource:met %graph app-resource)
       ?~  group-resource
         [~ state]
-      =/  meta=(unit metadata:metadata)
-        (peek-metadata:metadata %graph u.group-resource app-resource)
+      =/  meta=(unit metadata:metadata-store)
+        (peek-metadata:met %graph u.group-resource app-resource)
       ?~  meta
         [~ state]
       ?+    module.u.meta  [~ state]
@@ -247,7 +246,26 @@
   ~/  %hark-hook-peek
   |=  =path
   ^-  (unit (unit cage))
-  !!
+  ?+  path  (on-peek:def path)
+    ::
+      [%x %app-resource @ @ @ @ @ @ ~]
+    =/  group=(unit resource)
+      (de-path-soft:resource t.t.path)
+    =/  app-rid=(unit resource)
+      (de-path-soft:resource t.t.t.t.t.path)
+    ?~  group    [~ ~]
+    ?~  app-rid  [~ ~]
+    =/  by-group=(map resource unread-mop:store)
+      (~(gut by unreads) u.group *(map resource unread-mop:store))
+    =/  m-unread-mop=(unit unread-mop:store)
+      (~(get by by-group) u.app-rid)
+    ?~  m-unread-mop  [~ ~]
+    =*  unread-mop  u.m-unread-mop
+    :-  ~  :-  ~
+    :-  %hark-update
+    !>  ^-  update:store  
+    [%0 %unreads u.group u.app-rid unread-mop]
+  ==
 ::
 ++  on-leave  on-leave:def
 ++  on-arvo  on-arvo:def
