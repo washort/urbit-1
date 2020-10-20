@@ -96,6 +96,15 @@
   ^-  ?
   !(lte a b)
 ::
+++  inc
+  ~/  %inc
+  ::   unsigned increment
+  ::
+  ::  returns 1+a
+  |=  a=@
+  ^-  @
+  +(a)
+::
 ++  lte
   ~/  %lte
   ::    unsigned less than or equals
